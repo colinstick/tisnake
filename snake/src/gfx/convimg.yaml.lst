@@ -1,0 +1,13 @@
+global_palette.h
+global_palette.c
+block.h
+block.c
+apple.h
+apple.c
+coin.h
+coin.c
+val_logo.h
+val_logo.c
+blackblock.h
+blackblock.c
+gfx.h

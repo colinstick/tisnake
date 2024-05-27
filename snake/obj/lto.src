@@ -1,0 +1,624 @@
+	section	.text,"ax",@progbits
+	assume	adl = 1
+	section	.text,"ax",@progbits
+	public	_checkDeath
+_checkDeath:
+	ld	hl, -3
+	call	__frameset
+	ld	de, (_headR)
+	ld	bc, 15
+	push	de
+	pop	hl
+	or	a, a
+	sbc	hl, bc
+	jr	nc, BB0_3
+	ld	iy, (_headC)
+	ld	bc, 20
+	lea	hl, iy
+	or	a, a
+	sbc	hl, bc
+	jr	nc, BB0_3
+	ld	(ix - 3), iy
+	ld	iy, _arr
+	ld	bc, 60
+	ex	de, hl
+	call	__imulu
+	push	hl
+	pop	de
+	add	iy, de
+	ld	bc, 3
+	ld	hl, (ix - 3)
+	call	__imulu
+	push	hl
+	pop	de
+	add	iy, de
+	ld	hl, (iy)
+	add	hl, bc
+	or	a, a
+	sbc	hl, bc
+	jr	z, BB0_4
+BB0_3:
+	ld	a, 1
+	ld	(_dead), a
+BB0_4:
+	pop	hl
+	pop	ix
+	ret
+	section	.text,"ax",@progbits
+
+	section	.text,"ax",@progbits
+	public	_updateHead
+_updateHead:
+	ld	hl, -9
+	call	__frameset
+	ld	iy, _arr
+	ld	de, (_currDirection)
+	ld	hl, (_headR)
+	ld	bc, (_headC)
+	ld	(ix - 9), bc
+	ld	bc, 60
+	ld	(ix - 6), hl
+	call	__imulu
+	push	hl
+	pop	bc
+	add	iy, bc
+	ld	bc, 3
+	ld	hl, (ix - 9)
+	call	__imulu
+	push	hl
+	pop	bc
+	add	iy, bc
+	ld	(iy), de
+	ld	bc, 2
+	ld	(ix - 3), de
+	ex	de, hl
+	or	a, a
+	sbc	hl, bc
+	ld	bc, 0
+	jr	nz, BB1_2
+	ld	bc, -1
+BB1_2:
+	ld	hl, (ix - 6)
+	add	hl, bc
+	ld	(ix - 6), hl
+	ld	de, 4
+	ld	hl, (ix - 3)
+	or	a, a
+	sbc	hl, de
+	ld	bc, 1
+	push	bc
+	pop	de
+	ld	iy, (ix - 9)
+	jr	z, BB1_4
+	ld	de, 0
+BB1_4:
+	ld	hl, (ix - 6)
+	add	hl, de
+	ld	(_headR), hl
+	ld	hl, (ix - 3)
+	or	a, a
+	sbc	hl, bc
+	jr	z, BB1_6
+	ld	bc, 0
+BB1_6:
+	add	iy, bc
+	ld	de, 3
+	ld	hl, (ix - 3)
+	or	a, a
+	sbc	hl, de
+	jr	z, BB1_8
+	ld	de, 0
+	jr	BB1_9
+BB1_8:
+	ld	de, -1
+BB1_9:
+	add	iy, de
+	ld	(_headC), iy
+	call	_checkDeath
+	ld	hl, (_headC)
+	ld	c, 4
+	call	__ishl
+	push	hl
+	pop	de
+	ld	hl, (_headR)
+	call	__ishl
+	push	hl
+	push	de
+	ld	hl, _block_data
+	push	hl
+	call	_gfx_Sprite
+	ld	sp, ix
+	pop	ix
+	ret
+	section	.text,"ax",@progbits
+
+	section	.text,"ax",@progbits
+	public	_updateTail
+_updateTail:
+	ld	hl, -9
+	call	__frameset
+	ld	iy, _blackblock_data
+	ld	hl, (_tailC)
+	ld	c, 4
+	call	__ishl
+	push	hl
+	pop	de
+	ld	hl, (_tailR)
+	call	__ishl
+	push	hl
+	push	de
+	push	iy
+	call	_gfx_Sprite
+	pop	hl
+	pop	hl
+	pop	hl
+	ld	hl, (_tailR)
+	ld	de, (_tailC)
+	ld	bc, 60
+	ld	(ix - 6), hl
+	call	__imulu
+	push	hl
+	pop	bc
+	ld	iy, _arr
+	add	iy, bc
+	ld	bc, 3
+	ld	(ix - 9), de
+	ex	de, hl
+	call	__imulu
+	push	hl
+	pop	bc
+	add	iy, bc
+	ld	(ix - 3), iy
+	ld	bc, (iy)
+	dec	bc
+	ld	de, 4
+	push	bc
+	pop	hl
+	or	a, a
+	sbc	hl, de
+	jr	nc, BB2_8
+	ld	hl, JTI2_0
+	add	hl, bc
+	add	hl, bc
+	add	hl, bc
+	ld	hl, (hl)
+	jp	(hl)
+BB2_2:
+	ld	hl, (ix - 3)
+	ld	bc, 0
+	ld	(hl), bc
+	ld	hl, (ix - 9)
+	inc	hl
+	jr	BB2_4
+BB2_3:
+	ld	hl, (ix - 3)
+	ld	bc, 0
+	ld	(hl), bc
+	ld	hl, (ix - 9)
+	dec	hl
+BB2_4:
+	ld	(_tailC), hl
+	jr	BB2_8
+BB2_5:
+	ld	hl, (ix - 3)
+	ld	de, 0
+	ld	(hl), de
+	ld	hl, (ix - 6)
+	inc	hl
+	jr	BB2_7
+BB2_6:
+	ld	hl, (ix - 3)
+	ld	de, 0
+	ld	(hl), de
+	ld	hl, (ix - 6)
+	dec	hl
+BB2_7:
+	ld	(_tailR), hl
+BB2_8:
+	ld	sp, ix
+	pop	ix
+	ret
+	section	.text,"ax",@progbits
+	section	.rodata,"a",@progbits
+	private	JTI2_0
+JTI2_0:
+	dl	BB2_2
+	dl	BB2_6
+	dl	BB2_3
+	dl	BB2_5
+
+	section	.text,"ax",@progbits
+	public	_placeApple
+_placeApple:
+	ld	hl, -3
+	call	__frameset
+BB3_1:
+	call	_rand
+	ld	(ix - 3), hl
+	call	_rand
+	ld	bc, 13
+	call	__irems
+	push	hl
+	pop	iy
+	ld	hl, (ix - 3)
+	ld	bc, 18
+	call	__irems
+	push	hl
+	pop	de
+	ld	(ix - 3), iy
+	lea	hl, iy
+	ld	bc, 60
+	call	__imulu
+	push	hl
+	pop	bc
+	ld	iy, _arr
+	add	iy, bc
+	push	de
+	pop	hl
+	ld	bc, 3
+	call	__imulu
+	push	hl
+	pop	bc
+	add	iy, bc
+	ld	hl, (iy)
+	add	hl, bc
+	or	a, a
+	sbc	hl, bc
+	jr	nz, BB3_1
+	ld	iy, (ix - 3)
+	ld	(_appleR), iy
+	ld	(_appleC), de
+	ld	c, 4
+	ex	de, hl
+	call	__ishl
+	push	hl
+	pop	de
+	lea	hl, iy
+	call	__ishl
+	push	hl
+	push	de
+	ld	hl, _apple_data
+	push	hl
+	call	_gfx_TransparentSprite
+	ld	sp, ix
+	pop	ix
+	ret
+	section	.text,"ax",@progbits
+
+	section	.text,"ax",@progbits
+	public	_main
+_main:
+	ld	hl, -6
+	call	__frameset
+	ld	hl, 0
+	ld	de, _arr
+	ld	(ix - 3), de
+	push	hl
+	call	_time
+	pop	de
+	push	hl
+	call	_srand
+	pop	hl
+	call	_gfx_Begin
+	or	a, a
+	sbc	hl, hl
+	push	hl
+	ld	hl, 150
+	push	hl
+	ld	hl, _global_palette
+	push	hl
+	call	_gfx_SetPalette
+	pop	hl
+	pop	hl
+	pop	hl
+	or	a, a
+	sbc	hl, hl
+	push	hl
+	call	_gfx_SetTransparentColor
+	pop	hl
+	ld	hl, 2
+	push	hl
+	call	_gfx_FillScreen
+	pop	hl
+	or	a, a
+	sbc	hl, hl
+	push	hl
+	push	hl
+	ld	hl, _block_data
+	push	hl
+	call	_gfx_Sprite
+	pop	hl
+	pop	hl
+	pop	hl
+	ld	hl, -917456
+	push	de
+	ld	e, (hl)
+	inc	hl
+	ld	d, (hl)
+	ld	l, e
+	ld	h, d
+	pop	de
+	ld.sis	bc, -520
+	call	__sand
+	ld	bc, 0
+	ld.sis	de, 515
+	add.sis	hl, de
+	ld	iy, -917456
+	ld	(iy), l
+	ld	(iy + 1), h
+	push	bc
+	pop	hl
+BB4_1:
+	ld	(ix - 6), hl
+	ld	de, 13
+	or	a, a
+	sbc	hl, de
+	push	bc
+	pop	iy
+	jr	z, BB4_5
+BB4_2:
+	lea	hl, iy
+	ld	de, 54
+	or	a, a
+	sbc	hl, de
+	jr	z, BB4_4
+	lea	bc, iy
+	lea	hl, iy
+	ld	iy, (ix - 3)
+	add	iy, bc
+	ld	bc, 0
+	ld	(iy), bc
+	push	hl
+	pop	iy
+	ld	de, 3
+	add	iy, de
+	jr	BB4_2
+BB4_4:
+	ld	hl, (ix - 6)
+	inc	hl
+	ld	iy, (ix - 3)
+	lea	iy, iy + 60
+	ld	(ix - 3), iy
+	jr	BB4_1
+BB4_5:
+	ld	hl, 1
+	ld	(_arr), hl
+	ld	hl, (_appleC)
+	ld	c, 4
+	call	__ishl
+	push	hl
+	pop	de
+	ld	hl, (_appleR)
+	call	__ishl
+	push	hl
+	push	de
+	ld	hl, _apple_data
+	push	hl
+	call	_gfx_TransparentSprite
+	pop	hl
+	pop	hl
+	pop	hl
+	xor	a, a
+BB4_6:
+	ld	(ix - 3), a
+	ld	hl, -720866
+	push	de
+	ld	e, (hl)
+	inc	hl
+	ld	d, (hl)
+	ld	l, e
+	ld	h, d
+	pop	de
+	ld	a, l
+	bit	3, a
+	ld	hl, 2
+	jr	nz, BB4_10
+	ld	hl, -720866
+	push	de
+	ld	e, (hl)
+	inc	hl
+	ld	d, (hl)
+	ld	l, e
+	ld	h, d
+	pop	de
+	ld.sis	bc, 1
+	call	__sand
+	bit	0, l
+	ld	hl, 4
+	jr	nz, BB4_10
+	ld	hl, -720866
+	push	de
+	ld	e, (hl)
+	inc	hl
+	ld	d, (hl)
+	ld	l, e
+	ld	h, d
+	pop	de
+	ld	a, l
+	bit	1, a
+	ld	hl, 3
+	jr	nz, BB4_10
+	ld	hl, -720866
+	push	de
+	ld	e, (hl)
+	inc	hl
+	ld	d, (hl)
+	ld	l, e
+	ld	h, d
+	pop	de
+	ld	a, l
+	bit	2, a
+	ld	hl, 1
+	jr	z, BB4_11
+BB4_10:
+	ld	(_currDirection), hl
+BB4_11:
+	ld	hl, -917504
+	push	hl
+	call	_atomic_load_32
+	push	hl
+	pop	bc
+	ld	a, e
+	pop	hl
+	ld	hl, 6400
+	ld	e, l
+	call	__lcmpu
+	jr	nc, BB4_17
+	or	a, a
+	sbc	hl, hl
+	ld	(-917504), hl
+	ld	a, e
+	ld	(-917501), a
+	ld	l, (ix - 3)
+	ld	a, l
+	and	a, 1
+	bit	0, a
+	jr	nz, BB4_14
+	call	_updateTail
+	ld	e, (ix - 3)
+BB4_14:
+	ld	(ix - 3), e
+	call	_updateHead
+	ld	hl, (_headR)
+	ld	de, (_appleR)
+	or	a, a
+	sbc	hl, de
+	jr	nz, BB4_17
+	ld	hl, (_headC)
+	ld	de, (_appleC)
+	or	a, a
+	sbc	hl, de
+	ld	c, (ix - 3)
+	jr	nz, BB4_18
+	call	_placeApple
+	ld	a, 1
+	ld	c, a
+	jr	BB4_18
+BB4_17:
+	ld	c, (ix - 3)
+BB4_18:
+	ld	hl, -720878
+	ld	e, (hl)
+	inc	hl
+	ld	d, (hl)
+	ld	a, (_dead)
+	ld	l, a
+	ld	a, e
+	cp	a, 32
+	jr	z, BB4_20
+	ld	a, l
+	or	a, a
+	ld	a, c
+	jp	z, BB4_6
+BB4_20:
+	call	_gfx_End
+	or	a, a
+	sbc	hl, hl
+	ld	sp, ix
+	pop	ix
+	ret
+	section	.text,"ax",@progbits
+
+	section	.data,"aw",@progbits
+	public	_coin_data
+_coin_data:
+	db	"", 0, 0, 0, 0, "", 0, 0, 0, 0, 0, 0, "", 0, 0, 0, "G;", 0, 0, """J@", 0, "##DE:""#FB""#FB""#FB""#FB""#FB""!FB=""!CB", 0, "?HIIC", 0, 0, " ", 26, "=FF?", 0, 0, 0, "", 0, 0, 0, 0, 0, 0, "	", 0, 0, 0, 0
+
+	section	.data,"aw",@progbits
+	public	_val_logo_data
+_val_logo_data:
+	db	" ", 26, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "9/", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "733&", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "(63.'", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "&.63/..", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "'/.63//,7", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, ",./.63///)", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "6,//.63////&", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, ")///.63/////&", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "'////.63/////.,", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "&/////.63//////,6", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, ",./////.63///////*", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "4,//////.62.///////'", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "*///////.7", 0, "&////////&", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "'////////&", 0, 0, 0, "(///////.+", 0, 0, 0, 0, 0, 0, 0, 0, "&////////(", 0, 0, 0, 0, 0, "+///////,4", 0, 0, 0, 0, 0, 0, "+.///////+", 0, 0, 0, 0, 0, 0, "0.///////*", 0, 0, 0, 0, 0, ".%(((((((&3", 0, 0, 0, 0, 0, 0, 0, ").///////'", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "&////////&", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "(///////.+", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "+///////,3", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "2.///////+", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "*.///////(", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "&////////&", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "'///////.)", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "0333333318"
+	db	11 dup 0
+
+	section	.bss,"aw",@nobits
+	public	_headR
+_headR:
+	rb	3
+
+	section	.bss,"aw",@nobits
+	public	_headC
+_headC:
+	rb	3
+
+	section	.bss,"aw",@nobits
+	public	_tailR
+_tailR:
+	rb	3
+
+	section	.bss,"aw",@nobits
+	public	_tailC
+_tailC:
+	rb	3
+
+	section	.data,"aw",@progbits
+	public	_currDirection
+_currDirection:
+	dl	1
+
+	section	.data,"aw",@progbits
+	public	_appleR
+_appleR:
+	dl	5
+
+	section	.data,"aw",@progbits
+	public	_appleC
+_appleC:
+	dl	7
+
+	section	.bss,"aw",@nobits
+	public	_dead
+_dead:
+	rb	1
+
+	section	.bss,"aw",@nobits
+	public	_arr
+_arr:
+	rb	900
+
+	section	.data,"aw",@progbits
+	public	_block_data
+_block_data:
+	db	""
+
+	section	.data,"aw",@progbits
+	public	_blackblock_data
+_blackblock_data:
+	db	""
+
+	section	.data,"aw",@progbits
+	public	_apple_data
+_apple_data:
+	db	"", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 13, 0, 0, 10, 10, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "", 13, 13, 10, "", 10, 0, 0, 0, 0, 0, 0, 0, "$$", 13, 10, "", 10, 10, "$", 0, 0, 0, 0, 0, 0, "$$$$", 10, 10, "$$$", 0, 0, 0, 0, "$$$$$$$$$$$", 0, 0, 0, 0, "$$$$$$$$$", 0, 0, 0, 0, "$$$$$$$$$$$", 0, 0, 0, 0, "$$$$$$$$$$$", 0, 0, 0, 0, 0, "$$$$$$$", 0, 0, 0, 0, 0, 0, 0, "$$$$$", 0, 0, 0, 0, 0, 0, 0, "$$$$$$$", 0, 0, 0, 0, 0, 0, 0, 0, 0, "$$$", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "$"
+	db	40 dup 0
+
+	section	.data,"aw",@progbits
+	public	_global_palette
+_global_palette:
+	db	"|ˇˇ", 0, 0, 0, 0, "", 0, 0, "", 0, "ÑCDDàfé∆éAI@Q&‚FfffflgÓánÄoÄÔ®ˆ«v»v«ˆ$˜ ˚""˚A{B{C{C˚E˚¿˚‡{", 0, "|ß|ß¸®¸»|»¸…¸È|È¸	}", 10, "}", 10, "˝+˝K}L}L˝l}m}m˝ç}é˝Æ}ˇ(ADˇEˇdˇÉÑÉˇÑˇ†£§ˇƒ‡‡ˇ‚ˇ"
+
+	ident	"clang version 15.0.0 (https://github.com/jacobly0/llvm-project 5f8512f22751066573aa48ac848a6d2195838ac3)"
+	ident	"clang version 15.0.0 (https://github.com/jacobly0/llvm-project 5f8512f22751066573aa48ac848a6d2195838ac3)"
+	ident	"clang version 15.0.0 (https://github.com/jacobly0/llvm-project 5f8512f22751066573aa48ac848a6d2195838ac3)"
+	ident	"clang version 15.0.0 (https://github.com/jacobly0/llvm-project 5f8512f22751066573aa48ac848a6d2195838ac3)"
+	ident	"clang version 15.0.0 (https://github.com/jacobly0/llvm-project 5f8512f22751066573aa48ac848a6d2195838ac3)"
+	ident	"clang version 15.0.0 (https://github.com/jacobly0/llvm-project 5f8512f22751066573aa48ac848a6d2195838ac3)"
+	ident	"clang version 15.0.0 (https://github.com/jacobly0/llvm-project 5f8512f22751066573aa48ac848a6d2195838ac3)"
+	extern	__Unwind_SjLj_Register
+	extern	__frameset
+	extern	_srand
+	extern	_atomic_load_32
+	extern	_gfx_SetTransparentColor
+	extern	_gfx_Begin
+	extern	_gfx_SetPalette
+	extern	_rand
+	extern	__sand
+	extern	__ishl
+	extern	_gfx_FillScreen
+	extern	__Unwind_SjLj_Unregister
+	extern	__irems
+	extern	__imulu
+	extern	_gfx_Sprite
+	extern	__lcmpu
+	extern	_gfx_End
+	extern	_gfx_TransparentSprite
+	extern	_time
