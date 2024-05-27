@@ -1,0 +1,7 @@
+global_palette.h
+global_palette.c
+coin.h
+coin.c
+val_logo.h
+val_logo.c
+gfx.h
